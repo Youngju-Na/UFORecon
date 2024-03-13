@@ -74,14 +74,14 @@ IMAGE_ID1                       # index of reference image 1
 ...
 ```
 
-### Evaluation and Meshing
+### Evaluation (unfavorable)
 ```
-bash script/eval_dtu.sh
+bash script/eval_dtu_unfavorable.sh
 bash script/tsdf_fusion.sh
 bash script/clean_mesh.sh
 bash script/eval_dtu.sh
 ```
-Set `DATASET` as the root directory of the dataset, set `OUT_DIR` as the directory to store the rendered depth maps. `CKPT_FILE` is the path of the checkpoint file (default as our model pretrained on DTU). Run `bash eval_dtu.sh` on GPU. By Default, 3 images (`--test_n_view 3`) in image set 0 (`--set 0`) are used for testing.  
+Set `DATASET` as the root directory of the dataset, set `OUT_DIR` as the directory to store the rendered depth maps. By default, 3 images (`--test_n_view 3`) of unfavorable camera configuration (cam id: 1, 16, 36) in the image set 0 (`--set 0`) are used for testing. 
 
 * For quantitative evaluation, download [SampleSet](http://roboimagedata.compute.dtu.dk/?page_id=36) and [Points](http://roboimagedata.compute.dtu.dk/?page_id=36) from DTU's website. Unzip them and place `Points` folder in `SampleSet/MVS Data/`. The structure looks like:
 ```
@@ -90,7 +90,7 @@ SampleSet
       └──Points
 ```
 
-## Training on DTU
+## Training UFORecon on DTU (Best & Random set training)
 
 ```
 root_directory
@@ -102,6 +102,7 @@ root_directory
 ```
 bash script/train_dtu.sh
 ```
+Set `--view_selection_type` to `random` for applying random set training (default is `best` for training following the common protocol.)  
 
 ## Acknowledgement
 This project is based on [UFORecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
