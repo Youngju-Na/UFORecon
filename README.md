@@ -123,6 +123,18 @@ bash script/train_dtu.sh
 
 Set `--view_selection_type` to `random` for applying random set training (default is `best` for training following the common protocol.)  
 
+## <img src="figs/free_ufo3.png" width="50"> Citation 
+If you find this project useful for your research, please cite: 
+
+```
+@misc{na2024uforecon,
+      title={UFORecon: Generalizable Sparse-View Surface Reconstruction from Arbitrary and Unfavorable Sets}, 
+      author={Youngju Na and Woo Jae Kim and Kyu Beom Han and Suhyeon Ha and Sung-Eui Yoon},
+      journal={CVPR},
+      year={2024}
+}
+```
+
 ## <img src="figs/free_ufo3.png" width="50">  Acknowledgement
 This project is based on [VolRecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
 Thanks for their amazing work.
