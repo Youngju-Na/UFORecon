@@ -7,7 +7,7 @@ We will present this at CVPR 2024, June, Seattle.
 ----------------------------
 
 <p align="center">
-  <img src="" alt="UFORecon Logo" width="600">
+  <img src="https://github.com/Youngju-Na/UFORecon/blob/main/concept.png" alt="UFORecon Logo" width="600">
 </p>
 
 
