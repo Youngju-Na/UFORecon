@@ -1,3 +1,19 @@
-
+torchvision
+numpy
+SharedArray
+opencv-python
+pytorch_lightning
+GPUtil
+ipdb
+termcolor
+kornia
+plyfile
+pillow
+scikit-iamge=0.16.2
+numba
+pycuda
+open3d
+scikit-learn
+pyembree
 piq
 

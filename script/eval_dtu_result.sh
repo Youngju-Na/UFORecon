@@ -2,7 +2,7 @@
 export CUDA_VISIBLE_DEVICES="0"
 
 DATASET="/home/yourname/3d-recon/datasets/SampleSet" ##set to your SampleSet_MVS_Data
-OUT_DIR='/home/yourname/3d-recon/UFORecon/checkpoints_n_views/outputs_23_34'
+OUT_DIR='/home/yourname/3d-recon/UFORecon/checkpoints/favorable'
 python evaluation/dtu_eval.py --dataset_dir $DATASET $@ --outdir $OUT_DIR $@
 
 

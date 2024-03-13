@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 DATASET="./DTU_TEST" #set to your DTU_TEST dataset direction
-
 ROOT_DIR="./outputs" #set to your output direction
 
 python depth_fusion.py --dataset DTU --geo_mask_thres 4 --full_fusion \
