@@ -1,3 +1,5 @@
+easydict
+options
 torchvision
 numpy
 SharedArray

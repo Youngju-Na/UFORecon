@@ -266,17 +266,6 @@ def clean_mesh_faces_outside_frustum(args, scan, old_mesh_file, new_mesh_file, i
     new_mesh.remove_unreferenced_vertices()
     new_mesh.export(new_mesh_file)
 
-    # meshes = new_mesh.split(only_watertight=False)
-    #
-    # if not keep_largest:
-    #     meshes = [mesh for mesh in meshes if len(mesh.faces) > isolated_face_num]
-    #     # new_mesh = meshes[np.argmax([len(mesh.faces) for mesh in meshes])]
-    #     merged_mesh = trimesh.util.concatenate(meshes)
-    #     merged_mesh.export(new_mesh_file)
-    # else:
-    #     new_mesh = meshes[np.argmax([len(mesh.faces) for mesh in meshes])]
-    #     new_mesh.export(new_mesh_file)
-
     o3d.io.write_triangle_mesh(new_mesh_file.replace(".ply", "_raw.ply"), mesh_o3d)
     print("finishing removing triangles")
 
@@ -300,7 +289,7 @@ if __name__ == "__main__":
     parser.add_argument('--n_view', dest='n_view', type=int, default=3)
     parser.add_argument('--set', dest='set', type=int, default=0)
     parser.add_argument("--scale_factor", type=float)
-    parser.add_argument("--view_pair", type=int, nargs="+", default=[23, 24, 33, 22, 15, 34, 14, 32, 16, 35, 25])
+    parser.add_argument("--test_ref_view", type=int, nargs="+", default=[23, 24, 33, 22, 15, 34, 14, 32, 16, 35, 25])
     args = parser.parse_args()
 
     scans = [24, 37, 40, 55, 63, 65, 69, 83, 97, 105, 106, 110, 114, 118, 122]
@@ -309,7 +298,7 @@ if __name__ == "__main__":
     mask_kernel_size = 11
 
     if args.set==0:
-        view_list = args.view_pair
+        view_list = args.test_ref_view
     else:
         view_list = [43, 42, 44, 33, 34, 32, 45, 23, 41, 24, 31]
 

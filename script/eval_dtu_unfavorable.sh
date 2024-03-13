@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-DATASET="/home/yourname/3d-recon/datasets/DTU_TEST_uforecon/DTU_TEST" #set to your DTU_TEST dataset direction
-LOAD_CKPT="./pretrained/uforecon.ckpt"  #set to your checkpoint direction
-OUT_DIR="./checkpoints/favorable" #set to your output direction
+DATASET="datasets/DTU_TEST_uforecon/DTU_TEST" #set to your DTU_TEST dataset direction
+LOAD_CKPT="pretrained/uforecon.ckpt"  #set to your checkpoint direction
+OUT_DIR="checkpoints/unfavorable_1_16_36" #set to your output direction
 
 python main.py --extract_geometry --set 0 \
 --volume_type "correlation" --volume_reso 96 --view_selection_type "best" \
