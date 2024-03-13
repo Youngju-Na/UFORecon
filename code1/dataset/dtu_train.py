@@ -485,8 +485,7 @@ class MVSDataset(Dataset):
         depths_h = depths_h/cam_ray_d[2:3,:]
         # depths_mvs_h = depths_mvs_h.view(V, -1)
         # depths_mvs_h = depths_mvs_h/cam_ray_d[2:3, :]
-        
-        #! transmvsnet
+
         sample['proj_matrices'] = proj_matrices_ms
         sample['depths_h'] = depths_h.view(V,H,W)
         # sample['depths_mvs_h'] = depths_mvs_h.view(V,H,W)

@@ -362,7 +362,6 @@ class DtuFitSparse:
         new_render_w2cs = torch.from_numpy(np.float32(new_render_w2cs))
         new_render_c2ws = torch.from_numpy(np.float32(new_render_c2ws))
 
-        #! transmvsnet
         proj_matrices = np.stack(proj_matrices)
         stage2_pjmats = proj_matrices.copy()
         stage2_pjmats[:, 1, :2, :] = proj_matrices[:, 1, :2, :] * 2
@@ -393,7 +392,6 @@ class DtuFitSparse:
         sample['intrinsics'] = self.scaled_intrinsics[:, :3, :3]  # (V, 3, 3)
         sample['intrinsic_render_view'] = sample['intrinsics'][render_idx]
 
-        #! transmvsnet
         sample['proj_matrices'] = self.proj_matrices_ms
         depth_max = self.depth_interval * self.ndepths + self.depth_min
         depth_values_org_scale = np.arange(self.depth_min, depth_max, self.depth_interval, dtype=np.float32)
