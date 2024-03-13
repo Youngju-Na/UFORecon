@@ -7,9 +7,13 @@ We will be presenting UFORecon at CVPR 2024 in Seattle. Check out the project pa
 ----------------------------
 
 <p align="center">
-  <img src="https://github.com/Youngju-Na/UFORecon/blob/main/concept.png" alt="UFORecon Logo" width="600">
+  <img src="[volrecon65.gif](https://github.com/Youngju-Na/UFORecon/blob/main/figs/scan65_volrecon.gif)" alt="VolRecon" width="400"/>
+  <img src="[uforecon_random_65.gif](https://github.com/Youngju-Na/UFORecon/blob/main/figs/scan65_.gif)" alt="Ours(Random)" width="400"/>
 </p>
 
+<p align="center">
+  <img src="https://github.com/Youngju-Na/UFORecon/blob/main/concept.png" alt="UFORecon Logo" width="600">
+</p>
 
 **Abstract:**
 Generalizable neural implicit surface reconstruction aims to obtain an accurate underlying geometry given a limited number of multi-view images from unseen scenes. However, existing methods select only informative and relevant views using predefined scores for training and testing phases. This constraint renders the model impractical in real-world scenarios, where the availability of favorable combinations cannot always be ensured. We introduce and validate a view-combination score to indicate the effectiveness of the input view combination. We observe that previous methods output degenerate solutions under arbitrary and unfavorable sets. Building upon this finding, we propose UFORecon, a robust view-combination generalizable surface reconstruction framework. To achieve this, we apply cross-view matching transformers to model interactions between source images and build correlation frustums to capture global correlations. Additionally, we explicitly encode pairwise feature similarities as view-consistent priors. Our proposed framework significantly outperforms previous methods in terms of view-combination generalizability and also in the conventional generalizable protocol trained with favorable view-combinations.
