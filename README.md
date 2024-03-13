@@ -1,24 +1,26 @@
 # UFORecon
 
-> This repository contains a code of UFORecon. \
-> The project is led by Youngju Na and Suhyeon Ha.
+This repository contains a official code of **UFORecon: Generalizable Sparse-View Surface Reconstruction from Arbitrary and Unfavorable Sets.**
+We will present this at CVPR 2024, June, Seattle.
 
-<!-- ## Abstract
-
-We propose a view-combination generalizable sparse-view surface reconstruction method by modeling the correlations across pairs of input images. Generalizable neural implicit surface reconstruction aims to obtain an accurate underlying geometry given a limited number of multi-view images from unseen scenes. However, existing baseline methods select only fixed reconstruction favorable views using predefined view-selection scores for both the training and testing phases. This constraint leads to impracticality, as it is not always possible to guarantee the availability of favorable combinations in real-world scenarios. We observe that previous methods output degenerate solutions under arbitrary and challenging view sets. Building upon this finding, we propose UFORecon, a robust view-combination generalizable surface reconstruction framework. To this end, we apply cross-view matching transformers to model interactions between source images and build correlation frustums to capture global correlations. In addition, we explicitly encode pairwise feature similarities as robust geometric priors. Our proposed framework largely outperforms previous methods not only in view-combination generalizability but also in the existing generalizable protocol trained with favorable view-combinations. -->
-
+### [Project Page](https://youngju-na.github.io/uforecon.github.io/) | [arXiv](https://arxiv.org/abs/2403.05086) 
+----------------------------
 
 <p align="center">
-  <img src="https://github.com/YoungjuNa-KR/CS479-team9/assets/45136186/a2a3e86c-d268-43a5-9f12-e97a78bbcd6c" alt="UFORecon Logo" width="600">
+  <img src="" alt="UFORecon Logo" width="600">
 </p>
+
+
+**Abstract:**
+Generalizable neural implicit surface reconstruction aims to obtain an accurate underlying geometry given a limited number of multi-view images from unseen scenes. However, existing methods select only informative and relevant views using predefined scores for training and testing phases. This constraint renders the model impractical in real-world scenarios, where the availability of favorable combinations cannot always be ensured. We introduce and validate a view-combination score to indicate the effectiveness of the input view combination. We observe that previous methods output degenerate solutions under arbitrary and unfavorable sets. Building upon this finding, we propose UFORecon, a robust view-combination generalizable surface reconstruction framework. To achieve this, we apply cross-view matching transformers to model interactions between source images and build correlation frustums to capture global correlations. Additionally, we explicitly encode pairwise feature similarities as view-consistent priors. Our proposed framework significantly outperforms previous methods in terms of view-combination generalizability and also in the conventional generalizable protocol trained with favorable view-combinations.
+
 
 ### Requirements
 
-* python 3.8
+* python 3.10
 * CUDA 11.x
-
 ```
-conda create --name UFORecon python=3.8 pip
+conda create --name UFORecon python=3.10
 conda activate UFORecon
 
 pip install -r requirements.txt
@@ -26,7 +28,7 @@ pip install -r requirements.txt
 
 ## Reproducing Sparse View Reconstruction on DTU
 
-* Download pre-processed [DTU dataset](https://drive.google.com/file/d/1cMGgIAWQKpNyu20ntPAjq3ZWtJ-HXyb4/view?usp=sharing). The dataset is organized as follows:
+* Download pre-processed [DTU dataset](). The dataset is organized as follows:
 ```
 root_directory
 ├──cameras
@@ -89,8 +91,6 @@ SampleSet
 ```
 
 ## Training on DTU
-* Dataset link is provided by [UFORecon](https://github.com/IVRL/UFORecon)
-* Download pre-processed [DTU's training set](https://drive.google.com/file/d/1eDjh-_bxKKnEuz5h-HXS7EDJn59clx6V/view) and [Depths_raw](https://virutalbuy-public.oss-cn-hangzhou.aliyuncs.com/share/cascade-stereo/CasMVSNet/dtu_data/dtu_train_hr/Depths_raw.zip). Then organize the dataset as follows:
 
 ```
 root_directory
@@ -104,7 +104,7 @@ bash script/train_dtu.sh
 ```
 
 ## Acknowledgement
-This project is based on [UFORecon](https://github.com/IVRL/UFORecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
+This project is based on [UFORecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
 Thanks for their amazing work.
 
 
