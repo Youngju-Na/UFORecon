@@ -23,7 +23,6 @@ from code1.dataset.dtu_train import MVSDataset
 from code1.dataset.dtu_test_sparse import DtuFitSparse
 from code1.dataset.general_fit import GeneralFit
 
-from code1.encoder_utils.load_utils import load_transmvsnet_checkpoint
 import options
 
 PI = math.pi
@@ -41,17 +40,13 @@ if __name__ == "__main__":
         help='directory of training dataset')
 
     #* training 
-    parser.add_argument('--stage', dest='stage', type=int, required=True, help='stage of training')
     parser.add_argument('--batch_size', dest='batch_size', type=int, default=2, help='batch size')
     parser.add_argument('--max_epochs', dest='max_epochs', type=int, default=16, help='max num of epochs')
     parser.add_argument('--val_only', dest='val_only', action="store_true", help='only validate')
-    parser.add_argument('--gmflow_lr', dest='gmflow_lr', type=float, default=5.e-5, help='learning rate for gmflow encoder')
     parser.add_argument('--uforecon_lr', dest='uforecon_lr', type=float, default=1.e-4, help='learning rate for uforecon')
 
     #* checkpoints
     parser.add_argument('--load_ckpt', dest='load_ckpt', type=str, default=False, help='load pretrained lightning ckpt')
-    parser.add_argument('--gmflow_ckpt', dest='gmflow_ckpt', type=str, default=None, help='pretrained gmflow checkpoint')
-    parser.add_argument('--transmvsnet_ckpt', dest='transmvsnet_ckpt', type=str, default=None, help='pretrained transmvsnet checkpoint')
     
     #* ray sampling
     parser.add_argument('--train_ray_num', dest='train_ray_num', type=int, default=1024, help='ray number in one image')
@@ -64,7 +59,6 @@ if __name__ == "__main__":
     #* loss weights
     parser.add_argument('--weight_rgb', dest='weight_rgb', type=float, default=1.0)
     parser.add_argument('--weight_depth', dest='weight_depth', type=float, default=1.0)
-    parser.add_argument('--weight_perceptual', dest='weight_perceptual', type=float, default=0.0)
     parser.add_argument('--logdir', default='./checkpoints/random_sample', help='the directory to save checkpoints/logs')
 
     # -------------------------------- args for testing --------------------------------
@@ -95,7 +89,7 @@ if __name__ == "__main__":
     #* ablation args
     parser.add_argument("--view_selection_type", type=str, default="random", choices=["random", "best"])
     parser.add_argument("--mvs_depth_guide", type=int, default=0, help='use mvs depth map as guidance')
-    parser.add_argument("--volume_type", type=str, default="uforecon", choices=["volrecon", "transmvsnet"])
+    parser.add_argument("--volume_type", type=str, default="uforecon", choices=["featuregrid", "correlation"])
     parser.add_argument('--volume_reso', dest='volume_reso', type=int, default=96, help="3D feature volume resolution") # set as 0 to disable
     parser.add_argument("--use_dir_srdf", action="store_true", help='use direction srdf')
     parser.add_argument("--depth_pos_encoding", action="store_true", help='use depth pos encoding')
@@ -186,16 +180,13 @@ if __name__ == "__main__":
     uforecon = UFORecon(args)
     
     print("---------------------------------------------------------------------------------------------")
-    print("Training stage: ", args.stage, "VIEW_SELECTION_TYPE:", args.view_selection_type, "MVS_DEPTH: ", args.mvs_depth_guide)
+    print("VIEW_SELECTION_TYPE:", args.view_selection_type, "MVS_DEPTH: ", args.mvs_depth_guide)
     print("---------------------------------------------------------------------------------------------")
     
     if args.load_ckpt:
         uforecon = uforecon.load_from_checkpoint(checkpoint_path=args.load_ckpt, strict=True, args=args)
         print("Model loaded:", args.load_ckpt)
     
-    if args.transmvsnet_ckpt:
-        load_transmvsnet_checkpoint(uforecon.transmvsnet, args.transmvsnet_ckpt)
-        print(f"loaded transmvsnet pretrained weight from {args.transmvsnet_ckpt}.")
 
     tb_logger = pl_loggers.TensorBoardLogger("./%s" % args.logdir)
 

@@ -192,10 +192,10 @@ class RayTransformer(nn.Module):
 
         if self.args.volume_reso > 0: #* 96
             assert fea_volume != None
-            if self.args.volume_type == "uforecon":
+            if self.args.volume_type == "featuregrid":
                 fea_volume_feat = grid_sample_3d(fea_volume, point3D.unsqueeze(1).float())
                 fea_volume_feat = rearrange(fea_volume_feat, "B C RN SN -> (B RN SN) C")
-            elif self.args.volume_type == "transmvsnet":
+            elif self.args.volume_type == "correlation":
                 fea_volume_feat = rearrange(fea_volume, "B RN SN C -> (B RN SN) C")
             
         # -------- project points to feature map
@@ -227,7 +227,7 @@ class RayTransformer(nn.Module):
         #TODO: grid sample 2d depth
         depth_info=None
         if self.args.mvs_depth_guide > 0 and self.args.depth_pos_encoding:
-            if self.args.volume_type == "transmvsnet":
+            if self.args.volume_type == "correlation":
                 
                 depths_mvs = batch['depth_info'][:, 0:].float() #* B NV H W
             else:

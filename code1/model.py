@@ -11,20 +11,17 @@ from PIL import Image
 from tqdm import tqdm
 import pytorch_lightning as pl
 import cv2
-from .perceptual_extractor import VitExtractor
 import mcubes
 from einops import (rearrange, reduce, repeat)
 
 from .encoder_utils.sampler import FixedSampler, ImportanceSampler
-from .encoder_utils.feature_extractor import FPN_FeatureExtractor
 from .encoder_utils.fmt.TransMVSNet import TransMVSNet
 from .encoder_utils.single_variance_network import SingleVarianceNetwork
 from .encoder_utils.renderer import VolumeRenderer
 
 from .ray_transformer import RayTransformer
 from .feature_volume import FeatureVolume, MVSVolume
-from .gmflow.gmflow import GMFlow
-from .gmflow.utils import sample_features_by_grid
+from .utils.gmflow_utils import sample_features_by_grid
 from .misc import camera
 
 
@@ -33,7 +30,6 @@ class UFORecon(pl.LightningModule):
         super().__init__()
 
         self.args = args
-        self.stage = args.stage
         self.patch_size = args.patch_size
         self.sW = args.sW
         self.sH = args.sH 
@@ -57,18 +53,14 @@ class UFORecon(pl.LightningModule):
         self.importance_sampler = ImportanceSampler(point_num = self.point_num_2)
         self.deviation_network = SingleVarianceNetwork(0.3) # add variance network
 
-        if self.args.weight_perceptual > 0:
-            self.ext = VitExtractor(
-                model_name='dino_vits16', device=self.device)
-            
         self.ref_ = None
         
         self.renderer = VolumeRenderer(args)
         self.ray_transformer = RayTransformer(args = args) 
 
-        if self.args.volume_type=="volrecon" and self.args.volume_reso>0:
+        if self.args.volume_type=="featuregrid" and self.args.volume_reso>0:
             self.feature_volume = FeatureVolume(self.args.volume_reso)
-        if self.args.volume_type=="transmvsnet" and self.args.volume_reso>0:
+        if self.args.volume_type=="correlation" and self.args.volume_reso>0:
             self.feature_volume = MVSVolume(in_channels=1, base_channels=8)
 
         self.pos_encoding = self.order_posenc(d_hid=16, n_samples=self.point_num)
@@ -86,7 +78,7 @@ class UFORecon(pl.LightningModule):
             else:
                 uforecon_params.append(param)
         
-        #! freeze transmvsnet_params
+        # freeze MVS if needed
         for param in transmvsnet_params:
             param.requires_grad = False
             
@@ -182,7 +174,6 @@ class UFORecon(pl.LightningModule):
             attn_splits_list = self.opts.encoder.attn_splits_list #* [2]
         img1s = imgs[:, :cur_n_src_views]
 
-        # run gmflow backbone to extract features
         out_dict = self.match_enc(imgs=img1s, attn_splits_list=attn_splits_list, keep_raw_feats=True,
                                  wo_self_attn=False) #* GMFlow output 
         '''
@@ -226,6 +217,7 @@ class UFORecon(pl.LightningModule):
     
     def query_cond_info(self, point_samples, src_poses, src_images, src_feats_list, extract_similarity=False):
         '''
+            this code is heavily borrowed from MatchNeRF [arxiv'23]
             query conditional information from source images, using the reference position.
             point_samples: B, n_rays, n_samples, 3
             src_poses: dict, all camera information of source images 
@@ -332,7 +324,7 @@ class UFORecon(pl.LightningModule):
             cond_info, point_samples_pixel, mask_valid = self.query_cond_info(points_x, batch['source_poses'], batch['source_imgs'], match_feature)
         
         #TODO: query depth information from transmvsnet cost volume
-        if self.args.volume_type == "transmvsnet":
+        if self.args.volume_type == "correlation":
             volume_info = self.query_depth_from_volume(points_x, batch['source_poses'], feature_volume, near_far=batch['near_fars'][0][0], stages=["stage1", "stage2", "stage3"]) #! ablation
             feature_volume = volume_info
         
@@ -398,7 +390,7 @@ class UFORecon(pl.LightningModule):
         return rearrange(G_all, "(B RN SN) Dim -> B RN SN Dim", B=feat_vol.shape[0], RN=H, SN=W)
 
     
-    def infer(self, batch, ray_idx, source_imgs_feat, stage=0, feature_volume=None, extract_geometry=False, match_feature=None, ray_idx_all=None, is_train=True):
+    def infer(self, batch, ray_idx, source_imgs_feat, feature_volume=None, extract_geometry=False, match_feature=None, ray_idx_all=None, is_train=True):
 
         B, L, _, imgH, imgW = batch['source_imgs'].shape
         RN = ray_idx.shape[1]
@@ -426,13 +418,6 @@ class UFORecon(pl.LightningModule):
                                 up:up+(self.patch_size - 1) * self.sH + 1:self.sH]
                 ray_idx = ray_idx.reshape(B, -1) #* B, (patch_size * patch_size)
                 RN = ray_idx.shape[1]
-            
-            #! extract DINO features
-            with torch.no_grad():
-                if (self.ref_ is None or (np.random.random() > 0.95)) and self.args.weight_perceptual > 0:
-                    self.ref_ = self.get_vit_feature(patch) #TODO: real_patch를 dataset class에서 추가해야 함.
-                    self.ref_.requires_grad = False
-        
         
         if not extract_geometry:
             # gt rgb for rays
@@ -450,7 +435,7 @@ class UFORecon(pl.LightningModule):
         ray_o = repeat(batch['ray_o'], "B DimX -> B DimX RN", RN = RN) 
         ray_o = rearrange(ray_o, "B DimX RN -> (B RN) DimX")
 
-        #TODO ---------------------- coarse sampling along the ray -> dino sampling ----------------------
+        #TODO ---------------------- coarse sampling along the ray ---------------------
         if 'near_fars' in batch.keys():
             near_z = batch['near_fars'][:,0,0]
             near_z = repeat(near_z, "B -> B RN", RN=RN)
@@ -538,7 +523,6 @@ class UFORecon(pl.LightningModule):
         proj_matrices, near_fars, depth_values_org = batch['proj_matrices'], batch['near_fars'], batch['depth_values_org_scale']
         source_imgs = batch['source_imgs']            
         all_imgs_pair, all_proj_mats_pair, depth_values_org_pair = self.build_pairs(source_imgs, proj_matrices, depth_values_org)
-        # source_imgs_feat, volume_info = self.transmvsnet(source_imgs, proj_matrices, depth_values_org)
         source_imgs_feat, volume_info = self.transmvsnet(all_imgs_pair, all_proj_mats_pair, depth_values_org_pair)
         for i in range(len(source_imgs_feat)):
             source_imgs_feat[i]['stage1'] = source_imgs_feat[i]['stage1'][0:1]
@@ -551,15 +535,14 @@ class UFORecon(pl.LightningModule):
             source_imgs_feat_dict[stage] = torch.stack([feat[stage] for feat in source_imgs_feat], dim=1) #* (B V C H W)
         source_imgs_feat = source_imgs_feat_dict["stage1"]
         
-        if self.args.volume_type =="volrecon" and self.args.volume_reso > 0:
+        if self.args.volume_type =="featuregrid" and self.args.volume_reso > 0:
             feature_volume = self.build_feature_volume(batch, source_imgs_feat) #* (B, 4, 32, 128, 160)
-        elif self.args.volume_type == "transmvsnet":
+        elif self.args.volume_type == "correlation":
             feature_volume = {"stage1": volume_info['stage1']['cost_volume'], "stage2": volume_info['stage2']['cost_volume'], "stage3": volume_info['stage3']['cost_volume']}
             volume_feat, volume_weight = self.build_mvs_volume(batch, feature_volume['stage1'])
             volume_feat_2, volume_weight_2 = self.build_mvs_volume(batch, feature_volume['stage2'])
             volume_feat_3, volume_weight_3 = self.build_mvs_volume(batch, feature_volume['stage3'])
             
-            #! stage 1, 2, 3
             feature_volume = { "stage1": {"feature_volume": volume_feat, "weight_volume": volume_weight}, 
                                "stage2": {"feature_volume": volume_feat_2, "weight_volume": volume_weight_2},
                                "stage3": {"feature_volume": volume_feat_3, "weight_volume": volume_weight_3}}
@@ -568,7 +551,7 @@ class UFORecon(pl.LightningModule):
             raise NotImplementedError
         
         if self.args.mvs_depth_guide > 0:
-            depth_info = volume_info['stage3']['depth'] * batch['scale_factor'] #TODO: stage1을 쓰면 coarse한 Depth, stage3을 쓰면 fine한 Depth
+            depth_info = volume_info['stage3']['depth'] * batch['scale_factor']
             batch['depth_info'] = depth_info.unsqueeze(0)
         
         if volume_info is not None:
@@ -584,7 +567,6 @@ class UFORecon(pl.LightningModule):
                                                 ray_idx=ray_idx, 
                                                 ray_idx_all = ray_idx_all,
                                                 source_imgs_feat=source_imgs_feat,
-                                                stage=self.args.stage,
                                                 feature_volume=feature_volume,
                                                 match_feature=src_match_feats_list,
                                                 )
@@ -680,7 +662,6 @@ class UFORecon(pl.LightningModule):
 
         source_imgs = batch['source_imgs']       
         all_imgs_pair, all_proj_mats_pair, depth_values_org_pair = self.build_pairs(source_imgs, proj_matrices, depth_values_org)
-        # source_imgs_feat, volume_info = self.transmvsnet(source_imgs, proj_matrices, depth_values_org)
         source_imgs_feat, volume_info = self.transmvsnet(all_imgs_pair, all_proj_mats_pair, depth_values_org_pair)
         for i in range(len(source_imgs_feat)):
             source_imgs_feat[i]['stage1'] = source_imgs_feat[i]['stage1'][0:1]
@@ -691,9 +672,9 @@ class UFORecon(pl.LightningModule):
             source_imgs_feat_dict[stage] = torch.stack([feat[stage] for feat in source_imgs_feat], dim=1) #* (B V C H W)
         source_imgs_feat = source_imgs_feat_dict["stage1"]
         
-        if self.args.volume_type =="volrecon" and self.args.volume_reso > 0:
+        if self.args.volume_type =="featuregrid" and self.args.volume_reso > 0:
             feature_volume = self.build_feature_volume(batch, source_imgs_feat) #* (B, 4, 32, 128, 160)
-        elif self.args.volume_type == "transmvsnet":
+        elif self.args.volume_type == "correlation":
             feature_volume = {"stage1": volume_info['stage1']['cost_volume'], "stage2": volume_info['stage2']['cost_volume'], "stage3": volume_info['stage3']['cost_volume']}
             volume_feat, volume_weight = self.build_mvs_volume(batch, feature_volume['stage1'])
             volume_feat_2, volume_weight_2 = self.build_mvs_volume(batch, feature_volume['stage2'])
@@ -821,7 +802,6 @@ class UFORecon(pl.LightningModule):
 
         source_imgs = batch['source_imgs']            
         all_imgs_pair, all_proj_mats_pair, depth_values_org_pair = self.build_pairs(source_imgs, proj_matrices, depth_values_org)
-        # source_imgs_feat, volume_info = self.transmvsnet(source_imgs, proj_matrices, depth_values_org)
         source_imgs_feat, volume_info = self.transmvsnet(all_imgs_pair, all_proj_mats_pair, depth_values_org_pair)
         for i in range(len(source_imgs_feat)):
             source_imgs_feat[i]['stage1'] = source_imgs_feat[i]['stage1'][0:1]
@@ -833,9 +813,9 @@ class UFORecon(pl.LightningModule):
             source_imgs_feat_dict[stage] = torch.stack([feat[stage] for feat in source_imgs_feat], dim=1) #* (B V C H W)
         source_imgs_feat = source_imgs_feat_dict["stage1"]
         
-        if self.args.volume_type =="volrecon" and self.args.volume_reso > 0:
+        if self.args.volume_type =="featuregrid" and self.args.volume_reso > 0:
             feature_volume = self.build_feature_volume(batch, source_imgs_feat) #* (B, 4, 32, 128, 160)
-        elif self.args.volume_type == "transmvsnet":
+        elif self.args.volume_type == "correlation":
             feature_volume = {"stage1": volume_info['stage1']['cost_volume'], "stage2": volume_info['stage2']['cost_volume'], "stage3": volume_info['stage3']['cost_volume']}
             volume_feat, volume_weight = self.build_mvs_volume(batch, feature_volume['stage1'])
             volume_feat_2, volume_weight_2 = self.build_mvs_volume(batch, feature_volume['stage2'])
@@ -895,7 +875,6 @@ class UFORecon(pl.LightningModule):
         proj_matrices, near_fars, depth_values_org = batch['proj_matrices'], batch['near_fars'], batch['depth_values_org_scale']
         source_imgs = batch['source_imgs']            
         all_imgs_pair, all_proj_mats_pair, depth_values_org_pair = self.build_pairs(source_imgs, proj_matrices, depth_values_org)
-        # source_imgs_feat, volume_info = self.transmvsnet(source_imgs, proj_matrices, depth_values_org)
         source_imgs_feat, volume_info = self.transmvsnet(all_imgs_pair, all_proj_mats_pair, depth_values_org_pair)
         for i in range(len(source_imgs_feat)):
             source_imgs_feat[i]['stage1'] = source_imgs_feat[i]['stage1'][0:1]
