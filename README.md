@@ -105,7 +105,7 @@ bash script/train_dtu.sh
 Set `--view_selection_type` to `random` for applying random set training (default is `best` for training following the common protocol.)  
 
 ## Acknowledgement
-This project is based on [UFORecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
+This project is based on [VolRecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
 Thanks for their amazing work.
 
 
