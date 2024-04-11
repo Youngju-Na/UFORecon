@@ -8,7 +8,6 @@ We will be presenting UFORecon at CVPR 2024 in Seattle. Check out the project pa
 ## <img src="figs/free_ufo3.png" width="50"> Updates
 - [x] release evaluation code
 - [x] release pretrained weights
-- [ ] release dataset.
 
 ## <img src="figs/free_ufo3.png" width="50"> Overview
 <p align="center">
@@ -43,7 +42,7 @@ pip install -r requirements.txt
 
 ## <img src="figs/free_ufo3.png" width="40"> Reproducing Sparse View Reconstruction on DTU
 
-* Download pre-processed [DTU dataset](). The dataset is organized as follows:
+* Download pre-processed [DTU dataset following VolRecon](https://github.com/IVRL/VolRecon). The dataset is organized as follows:
 ```
 root_directory
 ├──cameras
