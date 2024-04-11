@@ -1,15 +1,15 @@
-# <img src="figs/free_ufo1.png" alt="UFORecon Logo" width="70"> UFORecon
+# <img src="figs/free_ufo1.png" alt="UFORecon Logo" width="35"> UFORecon
 
 This repository contains a official code of **UFORecon: Generalizable Sparse-View Surface Reconstruction from Arbitrary and Unfavorable Sets.** by Youngju Na, Woo Jae Kim, Kyu Beom Han, Suhyeon Ha, and Sung-Eui Yoon.
 
 We will be presenting UFORecon at CVPR 2024 in Seattle. Check out the project page and paper!
 ### [Project Page](https://youngju-na.github.io/uforecon.github.io/) | [arXiv](https://arxiv.org/abs/2403.05086) 
 
-## <img src="figs/free_ufo3.png" width="50"> Updates
+## <img src="figs/free_ufo3.png" width="35"> Updates
 - [x] release evaluation code
 - [x] release pretrained weights
 
-## <img src="figs/free_ufo3.png" width="50"> Overview
+## <img src="figs/free_ufo3.png" width="35"> Overview
 <p align="center">
   <table>
     <tr>
@@ -28,7 +28,7 @@ We will be presenting UFORecon at CVPR 2024 in Seattle. Check out the project pa
 Generalizable neural implicit surface reconstruction aims to obtain an accurate underlying geometry given a limited number of multi-view images from unseen scenes. However, existing methods select only informative and relevant views using predefined scores for training and testing phases. This constraint renders the model impractical in real-world scenarios, where the availability of favorable combinations cannot always be ensured. We introduce and validate a view-combination score to indicate the effectiveness of the input view combination. We observe that previous methods output degenerate solutions under arbitrary and unfavorable sets. Building upon this finding, we propose UFORecon, a robust view-combination generalizable surface reconstruction framework. To achieve this, we apply cross-view matching transformers to model interactions between source images and build correlation frustums to capture global correlations. Additionally, we explicitly encode pairwise feature similarities as view-consistent priors. Our proposed framework significantly outperforms previous methods in terms of view-combination generalizability and also in the conventional generalizable protocol trained with favorable view-combinations. -->
 
 
-## <img src="figs/free_ufo3.png" width="40">  Requirements
+## <img src="figs/free_ufo3.png" width="35">  Requirements
 
 All experiments are tested on Ubuntu (20.04 or 22.04) with a single RTX 3090 or 4090. 
 * python 3.10
@@ -40,7 +40,7 @@ conda activate UFORecon
 pip install -r requirements.txt
 ```
 
-## <img src="figs/free_ufo3.png" width="40"> Reproducing Sparse View Reconstruction on DTU
+## <img src="figs/free_ufo3.png" width="35"> Reproducing Sparse View Reconstruction on DTU
 
 * Download pre-processed [DTU dataset following VolRecon](https://github.com/IVRL/VolRecon). The dataset is organized as follows:
 ```
@@ -88,7 +88,7 @@ IMAGE_ID1                       # index of reference image 1
 ...
 ```
 
-### <img src="figs/free_ufo3.png" width="40"> Evaluation (unfavorable)
+### <img src="figs/free_ufo3.png" width="35"> Evaluation (unfavorable)
 
 
 Set `DATASET` as the root directory of the dataset, set `OUT_DIR` as the directory to store the rendered depth maps. By default, 3 images (`--test_n_view 3`) of unfavorable camera configuration (cam id: 1, 16, 36) in the image set 0 (`--set 0`) are used for testing. 
@@ -107,7 +107,7 @@ SampleSet
       └──Points
 ```
 
-## <img src="figs/free_ufo3.png" width="50"> Training UFORecon on DTU
+## <img src="figs/free_ufo3.png" width="35"> Training UFORecon on DTU
 
 ```
 root_directory
@@ -122,7 +122,7 @@ bash script/train_dtu.sh
 
 Set `--view_selection_type` to `random` for applying random set training (default is `best` for training following the common protocol.)  
 
-## <img src="figs/free_ufo3.png" width="50"> Citation 
+## <img src="figs/free_ufo3.png" width="35"> Citation 
 If you find this project useful for your research, please cite: 
 
 ```
@@ -134,7 +134,7 @@ If you find this project useful for your research, please cite:
 }
 ```
 
-## <img src="figs/free_ufo3.png" width="50">  Acknowledgement
+## <img src="figs/free_ufo3.png" width="35">  Acknowledgement
 This project is based on [VolRecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
 Thanks for their amazing work.
 
