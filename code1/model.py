@@ -395,30 +395,6 @@ class UFORecon(pl.LightningModule):
         B, L, _, imgH, imgW = batch['source_imgs'].shape
         RN = ray_idx.shape[1]
         
-        #TODO: patch-based sampling
-        if self.stage == 1 and is_train:
-            imgH, imgW = batch['ref_img'].shape[-2:]
-            if imgW > self.patch_size:
-                while True:
-                    ll = np.random.randint(
-                        0, imgW - (self.patch_size - 1) * self.sW - 1)
-                    up = np.random.randint(
-                        0, imgH - (self.patch_size - 1) * self.sH - 1)
-                    patch = batch['ref_img'][:, :, ll:ll+(self.patch_size - 1) * self.sW + 1:self.sW,
-                                up:up+(self.patch_size - 1) * self.sH + 1:self.sH]
-
-                    self.patch_size_x = patch.shape[-2]
-                    self.patch_size_y = patch.shape[-1]
-                    
-                    if patch.mean() > 0.01:
-                        break
-                
-                ray_idx_all = ray_idx_all.reshape(B, imgH, imgW)
-                ray_idx = ray_idx_all[:, ll:ll+(self.patch_size - 1) * self.sW + 1:self.sW,
-                                up:up+(self.patch_size - 1) * self.sH + 1:self.sH]
-                ray_idx = ray_idx.reshape(B, -1) #* B, (patch_size * patch_size)
-                RN = ray_idx.shape[1]
-        
         if not extract_geometry:
             # gt rgb for rays
             ref_img = rearrange(batch['ref_img'], "B DimRGB H W -> B DimRGB (H W)")
@@ -539,7 +515,7 @@ class UFORecon(pl.LightningModule):
             feature_volume = self.build_feature_volume(batch, source_imgs_feat) #* (B, 4, 32, 128, 160)
         elif self.args.volume_type == "correlation":
             feature_volume = {"stage1": volume_info['stage1']['cost_volume'], "stage2": volume_info['stage2']['cost_volume'], "stage3": volume_info['stage3']['cost_volume']}
-            volume_feat, volume_weight = self.build_mvs_volume(batch, feature_volume['stage1'])
+            volume_feat, volume_weight = self.build_mvs_volume(batch, feature_volume['stage1']) #* (B, 1, D, H, W)
             volume_feat_2, volume_weight_2 = self.build_mvs_volume(batch, feature_volume['stage2'])
             volume_feat_3, volume_weight_3 = self.build_mvs_volume(batch, feature_volume['stage3'])
             
@@ -639,15 +615,15 @@ class UFORecon(pl.LightningModule):
                     "psnr/coarse":0,
                     "psnr/fine":0}
             
-        if self.args.extract_similarity:
-            self.extract_similarity(batch, batch_idx)
-            # return dummy data
-            return {"val/loss_rgb_coarse":0,
-                    "val/loss_rgb_fine":0,
-                    "val/loss_depth_coarse":0,
-                    "val/loss_depth_fine":0,
-                    "psnr/coarse":0,
-                    "psnr/fine":0}
+        # if self.args.extract_similarity:
+        #     self.extract_similarity(batch, batch_idx)
+        #     # return dummy data
+        #     return {"val/loss_rgb_coarse":0,
+        #             "val/loss_rgb_fine":0,
+        #             "val/loss_depth_coarse":0,
+        #             "val/loss_depth_fine":0,
+        #             "psnr/coarse":0,
+        #             "psnr/fine":0}
             
         B, L, _, imgH, imgW = batch['source_imgs'].shape
         

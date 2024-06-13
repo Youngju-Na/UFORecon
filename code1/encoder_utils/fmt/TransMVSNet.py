@@ -4,6 +4,20 @@ import torch.nn.functional as F
 from .module import *
 from .FMT import FMT_with_pathway
 
+
+'''
+This code is borrowed from TransMVSNet (CVPR 2022)
+
+@inproceedings{ding2022transmvsnet,
+  title={Transmvsnet: Global context-aware multi-view stereo network with transformers},
+  author={Ding, Yikang and Yuan, Wentao and Zhu, Qingtian and Zhang, Haotian and Liu, Xiangyue and Wang, Yuanjiang and Liu, Xiao},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={8585--8594},
+  year={2022}
+}
+
+'''
+
 Align_Corners_Range = False
 
 class PixelwiseNet(nn.Module):

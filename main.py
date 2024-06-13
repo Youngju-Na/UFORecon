@@ -66,7 +66,6 @@ if __name__ == "__main__":
     parser.add_argument('--out_dir', dest='out_dir', type=str, help='directory of to save test result')
     parser.add_argument('--depth_dir', dest='depth_dir', type=str, help='directory of depth maps')
     parser.add_argument('--extract_geometry', dest='extract_geometry', action='store_true', help='if you only want to extract geometry')
-    # parser.add_argument('--extract_similarity', dest='extract_similarity', action='store_true', help='if you only want to extract similarity')
     
     #* testing args
     parser.add_argument('--test_general', dest='test_general', action='store_true', help='test on custom dataset')
@@ -89,7 +88,7 @@ if __name__ == "__main__":
     #* ablation args
     parser.add_argument("--view_selection_type", type=str, default="random", choices=["random", "best"])
     parser.add_argument("--mvs_depth_guide", type=int, default=0, help='use mvs depth map as guidance')
-    parser.add_argument("--volume_type", type=str, default="uforecon", choices=["featuregrid", "correlation"])
+    parser.add_argument("--volume_type", type=str, default="correlation", choices=["featuregrid", "correlation"])
     parser.add_argument('--volume_reso', dest='volume_reso', type=int, default=96, help="3D feature volume resolution") # set as 0 to disable
     parser.add_argument("--use_dir_srdf", action="store_true", help='use direction srdf')
     parser.add_argument("--depth_pos_encoding", action="store_true", help='use depth pos encoding')
