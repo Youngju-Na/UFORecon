@@ -138,5 +138,5 @@ If you find this project useful for your research, please cite:
 This project is based on [VolRecon](https://github.com/IVRL/VolRecon), [TransMVSNet](https://github.com/megvii-research/TransMVSNet), and [MatchNeRF](https://github.com/donydchen/matchnerf).
 Thanks for their amazing work.
 
-
-
+## <img src="figs/free_ufo3.png" width="35"> License
+project is released under the MIT License.
