@@ -139,4 +139,4 @@ This project is based on [VolRecon](https://github.com/IVRL/VolRecon), [TransMVS
 Thanks for their amazing work.
 
 ## <img src="figs/free_ufo3.png" width="35"> License
-project is released under the MIT License.
+This project is released under the MIT License.
