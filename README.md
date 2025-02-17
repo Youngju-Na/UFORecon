@@ -126,11 +126,12 @@ Set `--view_selection_type` to `random` for applying random set training (defaul
 If you find this project useful for your research, please cite: 
 
 ```
-@misc{na2024uforecon,
-      title={UFORecon: Generalizable Sparse-View Surface Reconstruction from Arbitrary and Unfavorable Sets}, 
-      author={Youngju Na and Woo Jae Kim and Kyu Beom Han and Suhyeon Ha and Sung-Eui Yoon},
-      journal={CVPR},
-      year={2024}
+@inproceedings{na2024uforecon,
+  title={UFORecon: Generalizable Sparse-View Surface Reconstruction from Arbitrary and Unfavorable Sets},
+  author={Na, Youngju and Kim, Woo Jae and Han, Kyu Beom and Ha, Suhyeon and Yoon, Sung-Eui},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={5094--5104},
+  year={2024}
 }
 ```
 
