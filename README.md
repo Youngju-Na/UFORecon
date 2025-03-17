@@ -36,9 +36,11 @@ All experiments are tested on Ubuntu (20.04 or 22.04) with a single RTX 3090 or 
 ```
 conda create --name UFORecon python=3.10
 conda activate UFORecon
-conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia # change this accordingly to your setup
+conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
+Run one of `.vscode/launch.json` to see whether your environment is built properly (Change the `root_dir` to your DTU dataset directory).
+
 
 ## <img src="figs/free_ufo3.png" width="35"> Reproducing Sparse View Reconstruction on DTU
 
