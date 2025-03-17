@@ -1,8 +1,8 @@
-# <img src="figs/free_ufo1.png" alt="UFORecon Logo" width="35"> UFORecon
+# <img src="figs/free_ufo1.png" alt="UFORecon Logo" width="35"> UFORecon (CVPR 2024)
 
 This repository contains a official code of **UFORecon: Generalizable Sparse-View Surface Reconstruction from Arbitrary and Unfavorable Sets.** by Youngju Na, Woo Jae Kim, Kyu Beom Han, Suhyeon Ha, and Sung-Eui Yoon.
 
-We will be presenting UFORecon at CVPR 2024 in Seattle. Check out the project page and paper!
+Check out the project page and paper.
 ### [Project Page](https://youngju-na.github.io/uforecon.github.io/) | [arXiv](https://arxiv.org/abs/2403.05086) 
 
 ## <img src="figs/free_ufo3.png" width="35"> Updates
