@@ -176,16 +176,21 @@ if __name__ == "__main__":
                 dataloader_test.append(dataloader_tmp)
 
     # -------------------------------- lightning module -------------------------------
-    uforecon = UFORecon(args)
+    
     
     print("---------------------------------------------------------------------------------------------")
     print("VIEW_SELECTION_TYPE:", args.view_selection_type, "MVS_DEPTH: ", args.mvs_depth_guide)
     print("---------------------------------------------------------------------------------------------")
     
-    if args.load_ckpt:
-        uforecon = uforecon.load_from_checkpoint(checkpoint_path=args.load_ckpt, strict=True, args=args)
-        print("Model loaded:", args.load_ckpt)
     
+    if args.load_ckpt:
+        uforecon = UFORecon.load_from_checkpoint(checkpoint_path=args.load_ckpt, strict=True, args=args)
+        print("Model loaded:", args.load_ckpt)
+    else:
+        uforecon = UFORecon(args)    
+        
+        
+        
 
     tb_logger = pl_loggers.TensorBoardLogger("./%s" % args.logdir)
 
@@ -201,11 +206,11 @@ if __name__ == "__main__":
     trainer = pl.Trainer(
         accelerator="gpu" if device=="cuda" else "cpu", 
         devices=devices,
-        strategy = "ddp",
+        strategy = None,
         max_epochs=args.max_epochs,
         check_val_every_n_epoch=1, 
         logger=tb_logger,
-        num_sanity_val_steps=1,
+        num_sanity_val_steps=0,
         callbacks=[checkpoint_callback],
         )
     

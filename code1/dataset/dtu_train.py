@@ -386,9 +386,9 @@ class MVSDataset(Dataset):
         #ms proj_mats
         proj_matrices = np.stack(proj_matrices)
         stage2_pjmats = proj_matrices.copy()
-        stage2_pjmats[:, 1, :2, :] = proj_matrices[:, 1, :2, :] * 2
+        stage2_pjmats[:, 1, :2, :] = proj_matrices[:, 1, :2, :] * 2 #* scale intrinsic
         stage3_pjmats = proj_matrices.copy()
-        stage3_pjmats[:, 1, :2, :] = proj_matrices[:, 1, :2, :] * 4
+        stage3_pjmats[:, 1, :2, :] = proj_matrices[:, 1, :2, :] * 4 #* scale intrinsic
     
         proj_matrices_ms = {
             "stage1": proj_matrices,

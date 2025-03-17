@@ -86,7 +86,6 @@
                 "--view_selection_type", "best",
                 "--test_dir", "/home/youngju/ssd/datasets/DTU_TEST", // "/home/youngju/ssd/datasets/DTU_TEST"
                 "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon.ckpt",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/checkpoints_dir/checkpoints_ablation_wo_depth_loss/checkpoints/wo_depth_epoch1.ckpt",
                 "--out_dir", "/home/youngju/ssd/UFORecon/rebuttal/depth_map_comparison",
                 // "--depth_dir", "depth_mvs_800_1_16_36",
                 "--feature_extractor", "transmvsnet",
@@ -147,11 +146,7 @@
                 "--volume_reso", "96",
                 "--view_selection_type", "best",
                 "--test_dir", "/home/youngju/ssd/datasets/BlendedMVS",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/checkpoints_dir/checkpoints_best_pair_stage0_transmvsnet_1109/checkpoints/epoch=02.ckpt",
                 "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon.ckpt",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon_ep12.ckpt",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon_random_ep9.ckpt",
-                // "--out_dir", "/home/youngju/ssd/UFORecon/checkpoints_BlendedMVS/sculptures",
                 "--out_dir", "/home/youngju/ssd/UFORecon/checkpoints_BlendedMVS_0124/59f363a8b45be22330016cad_best_training_ep1/29_59_67",
                 "--test_scan", "59f363a8b45be22330016cad",
                 "--depth_pos_encoding",
@@ -215,11 +210,7 @@
                 "--volume_reso", "96",
                 "--view_selection_type", "best",
                 "--test_dir", "/home/youngju/ssd/datasets/mvi_06/",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/checkpoints_dir/checkpoints_best_pair_stage0_transmvsnet_1109/checkpoints/epoch=02.ckpt",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon.ckpt",
-                // "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon_ep12.ckpt",
                 "--load_ckpt", "/home/youngju/ssd/UFORecon/pretrained/uforecon_random_ep9.ckpt",
-                // "--out_dir", "/home/youngju/ssd/UFORecon/checkpoints_BlendedMVS/sculptures",
                 "--out_dir", "/home/youngju/ssd/UFORecon/checkpoints_mvi06//0000868e/2_15_1_22",
                 "--depth_pos_encoding",
                 "--mvs_depth_guide", "1",
@@ -227,11 +218,8 @@
                 "--test_general",
                 "--test_ref_view", "2", "15", "1", "22",
                 "--test_scan", "0000868e",
-                // "--test_ref_view", "23", "29", "5", "28",
                 "--dataset", "mvimage",
                 "--use_mask",
-                // "--test_ref_view", "125", "60", "28", "126",
-                // "--test_ref_view", "29", "59", "67"
             ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
@@ -256,7 +244,6 @@
             "--W", "720"
             ]
         },
-
 
         {
             "name": "colmap2mvsnet",
